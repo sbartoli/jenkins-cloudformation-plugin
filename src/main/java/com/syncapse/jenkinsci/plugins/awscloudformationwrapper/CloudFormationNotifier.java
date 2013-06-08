@@ -65,6 +65,7 @@ public class CloudFormationNotifier extends Notifier {
 			CloudFormation cloudFormation = new CloudFormation(
 					listener.getLogger(),
 					stack.getStackName(),
+					stack.getAwsTemplateType(), 
 					"",
 					new HashMap<String, String>(),
 					0,

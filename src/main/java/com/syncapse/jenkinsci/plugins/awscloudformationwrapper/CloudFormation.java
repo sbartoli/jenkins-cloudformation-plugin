@@ -55,25 +55,29 @@ public class CloudFormation {
     private boolean autoDeleteStack;
 	private EnvVars envVars;
 	private Region awsRegion;
+	private TemplateType awsTemplateType;
 
 	private Map<String, String> outputs;
 
 	/**
 	 * @param logger a logger to write progress information.
 	 * @param stackName the name of the stack as defined in the AWS CloudFormation API.
+	 * @param templateType is to allow selecting to use recipe as file or url (s3).
 	 * @param recipeBody the body of the json document describing the stack.
 	 * @param parameters a Map of where the keys are the param name and the value the param value.
 	 * @param timeout Time to wait for the creation of a stack to complete. This value will be the greater between {@link #MIN_TIMEOUT} and the given value.
 	 * @param awsAccessKey the AWS API Access Key.
 	 * @param awsSecretKey the AWS API Secret Key.
+
 	 */
-	public CloudFormation(PrintStream logger, String stackName,
+	public CloudFormation(PrintStream logger, String stackName, TemplateType templateType,
 			String recipeBody, Map<String, String> parameters,
 			long timeout, String awsAccessKey, String awsSecretKey, Region region, 
             boolean autoDeleteStack, EnvVars envVars) {
 
 		this.logger = logger;
 		this.stackName = stackName;
+		this.awsTemplateType = templateType != null ? templateType : TemplateType.getDefault();
 		this.recipe = recipeBody;
 		this.parameters = parameters(parameters);
 		this.awsAccessKey = awsAccessKey;
@@ -95,7 +99,7 @@ public class CloudFormation {
 			String recipeBody, Map<String, String> parameters, long timeout,
 			String awsAccessKey, String awsSecretKey, boolean autoDeleteStack,
 			EnvVars envVars) {
-		this(logger, stackName, recipeBody, parameters, timeout, awsAccessKey,
+		this(logger, stackName, null, recipeBody, parameters, timeout, awsAccessKey,
 				awsSecretKey, null, autoDeleteStack, envVars);
 	}
 
@@ -303,7 +307,15 @@ public class CloudFormation {
 		CreateStackRequest r = new CreateStackRequest();
 		r.withStackName(getExpandedStackName());
 		r.withParameters(parameters);
-		r.withTemplateBody(recipe);
+		if (this.awsTemplateType.toString() == TemplateType.Template_File.toString() ){
+			r.withTemplateBody(recipe);		
+		}
+		else if(this.awsTemplateType.toString() == TemplateType.Template_URL.toString() ){
+			r.withTemplateURL(recipe);
+		}
+		else {
+			return null;
+		}
 		r.withCapabilities("CAPABILITY_IAM");
 		
 		return r;

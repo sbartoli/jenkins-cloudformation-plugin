@@ -120,14 +120,26 @@ public class CloudFormationBuildWrapper extends BuildWrapper {
 	protected CloudFormation newCloudFormation(StackBean stackBean,
 			AbstractBuild<?, ?> build, EnvVars env, PrintStream logger)
 			throws IOException {
-
-		return new CloudFormation(logger, stackBean.getStackName(), build
-				.getWorkspace().child(stackBean.getCloudFormationRecipe())
-				.readToString(), stackBean.getParsedParameters(env),
+		
+		if (stackBean.getAWSTemplateType().toString() == TemplateType.Template_File.toString() ){
+		return new CloudFormation(logger, stackBean.getStackName(), 
+				stackBean.getAWSTemplateType(), 
+				build.getWorkspace().child(stackBean.getCloudFormationRecipe()).readToString(),
+			    stackBean.getParsedParameters(env),
 				stackBean.getTimeout(), stackBean.getParsedAwsAccessKey(env),
 				stackBean.getParsedAwsSecretKey(env),
 				stackBean.getAwsRegion(), stackBean.getAutoDeleteStack(), env);
-
+		} else if (stackBean.getAWSTemplateType().toString() == TemplateType.Template_URL.toString() ){
+			return new CloudFormation(logger, stackBean.getStackName(), 
+					stackBean.getAWSTemplateType(), stackBean.getCloudFormationRecipe(),
+				    stackBean.getParsedParameters(env),
+					stackBean.getTimeout(), stackBean.getParsedAwsAccessKey(env),
+					stackBean.getParsedAwsSecretKey(env),
+					stackBean.getAwsRegion(), stackBean.getAutoDeleteStack(), env);	
+	    }
+		else {
+			return null;
+		}
 	}
 
 	@Extension
@@ -135,7 +147,7 @@ public class CloudFormationBuildWrapper extends BuildWrapper {
 
 		@Override
 		public String getDisplayName() {
-			return "Create AWS Cloud Formation stack";
+			return "Create AWS Cloud Formation stack using template URL";
 		}
 
 		@Override

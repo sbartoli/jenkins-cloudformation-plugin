@@ -5,7 +5,10 @@
 		<f:entry field="awsRegion" title="AWS Region">
 			<f:select />
 		</f:entry>
-		<f:entry title="Cloud Formation recipe file. (.json)" field="cloudFormationRecipe">
+		<f:entry field="awsTemplateType" title="AWS Template Type">
+			<f:select />
+		</f:entry>
+		<f:entry title="Cloud Formation recipe file. (.json) or URL" field="cloudFormationRecipe">
 			<f:textbox />
 		</f:entry>
 		<f:entry title="Stack name" field="stackName">

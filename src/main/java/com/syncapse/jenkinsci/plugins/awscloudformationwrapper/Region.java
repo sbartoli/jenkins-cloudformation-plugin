@@ -19,7 +19,7 @@ public enum Region {
 	}
 
 	public static Region getDefault() {
-		return US_East_Northern_Virginia;
+		return Asia_Pacific_Sydney;
 	}
 	
 }

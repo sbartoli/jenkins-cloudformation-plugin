@@ -30,6 +30,11 @@ public class SimpleStackBean extends AbstractDescribableImpl<SimpleStackBean> {
 	/**
 	 * The access key to call Amazon's APIs
 	 */
+	private TemplateType awsTemplateType;
+
+	/**
+	 * The access key to call Amazon's APIs
+	 */
 	private String awsAccessKey;
 
 	/**
@@ -43,9 +48,11 @@ public class SimpleStackBean extends AbstractDescribableImpl<SimpleStackBean> {
 	private Region awsRegion;
 
 	@DataBoundConstructor
-	public SimpleStackBean(String stackName, String awsAccessKey,
+	public SimpleStackBean(String stackName, TemplateType awsTemplateType, 
+			String awsAccessKey,
 			String awsSecretKey, Region awsRegion) {
 		this.stackName = stackName;
+		this.awsTemplateType = awsTemplateType != null ? awsTemplateType : TemplateType.getDefault();
 		this.awsAccessKey = awsAccessKey;
 		this.awsSecretKey = awsSecretKey;
 		this.awsRegion = awsRegion != null ? awsRegion : Region.getDefault();
@@ -55,6 +62,9 @@ public class SimpleStackBean extends AbstractDescribableImpl<SimpleStackBean> {
 		return stackName;
 	}
 
+	public TemplateType getAwsTemplateType() {
+		return awsTemplateType;
+	}
 	public String getAwsAccessKey() {
 		return awsAccessKey;
 	}
@@ -92,7 +102,13 @@ public class SimpleStackBean extends AbstractDescribableImpl<SimpleStackBean> {
 			}
 			return FormValidation.ok();
 		}
-
+		public ListBoxModel doFillAwsTemplateTypeItems() {
+			ListBoxModel items = new ListBoxModel();
+			for (TemplateType templateType : TemplateType.values()) {
+				items.add(templateType.readableName, templateType.name());
+			}
+			return items;
+		}
 		public FormValidation doCheckAwsAccessKey(
 				@AncestorInPath AbstractProject<?, ?> project,
 				@QueryParameter String value) throws IOException {
@@ -118,7 +134,6 @@ public class SimpleStackBean extends AbstractDescribableImpl<SimpleStackBean> {
 			}
 			return items;
 		}
-
 	}
 
 }
