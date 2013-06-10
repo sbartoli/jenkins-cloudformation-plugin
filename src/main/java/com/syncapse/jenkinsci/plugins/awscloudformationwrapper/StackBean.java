@@ -37,7 +37,7 @@ public class StackBean extends AbstractDescribableImpl<StackBean> {
 	/**
 	 * The location / type of cloudformation recipe (file or URL).
 	 */
-	private TemplateType awsTemplateType;
+	private TemplateLocation awsTemplateLocation;
 	
 	/**
 	 * The json file or URL with the Cloud Formation definition.
@@ -72,13 +72,13 @@ public class StackBean extends AbstractDescribableImpl<StackBean> {
     private Region awsRegion;
 	
 	@DataBoundConstructor
-	public StackBean(String stackName, String description, TemplateType awsTemplateType,
+	public StackBean(String stackName, String description, TemplateLocation awsTemplateLocation,
 			String cloudFormationRecipe, String parameters, long timeout,
 			String awsAccessKey, String awsSecretKey, boolean autoDeleteStack, Region awsRegion) {
 		super();
 		this.stackName = stackName;
 		this.description = description;
-		this.awsTemplateType = awsTemplateType;
+		this.awsTemplateLocation = awsTemplateLocation;
 		this.cloudFormationRecipe = cloudFormationRecipe;
 		this.parameters = parameters;
 		this.timeout = timeout;
@@ -96,8 +96,8 @@ public class StackBean extends AbstractDescribableImpl<StackBean> {
 		return description;
 	}
 	
-	public TemplateType getAWSTemplateType() {
-		return awsTemplateType;
+	public TemplateLocation getAwsTemplateLocation() {
+		return awsTemplateLocation;
 	}
 	public String getCloudFormationRecipe() {
 		return cloudFormationRecipe;
@@ -176,10 +176,10 @@ public class StackBean extends AbstractDescribableImpl<StackBean> {
 			}
 			return FormValidation.ok();
 		}
-		public ListBoxModel doFillAwsTemplateTypeItems() {
+		public ListBoxModel doFillAwsTemplateLocationItems() {
             ListBoxModel items = new ListBoxModel();
-            for (TemplateType templateType : TemplateType.values()) {
-				items.add(templateType.readableName, templateType.name());
+            for (TemplateLocation templateLocation : TemplateLocation.values()) {
+				items.add(templateLocation.readableName, templateLocation.name());
 			}
             return items;
         }
@@ -200,7 +200,7 @@ public class StackBean extends AbstractDescribableImpl<StackBean> {
 				@AncestorInPath AbstractProject<?, ?> project,
 				@QueryParameter String value) throws IOException {
 			if (0 == value.length()) {
-				return FormValidation.error("Empty cloudformation template url.");
+				return FormValidation.error("Empty cloudformation template.");
 			}
 			return FormValidation.ok();
 		}

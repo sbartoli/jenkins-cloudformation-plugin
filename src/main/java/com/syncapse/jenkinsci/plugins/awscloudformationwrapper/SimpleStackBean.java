@@ -30,7 +30,7 @@ public class SimpleStackBean extends AbstractDescribableImpl<SimpleStackBean> {
 	/**
 	 * The access key to call Amazon's APIs
 	 */
-	private TemplateType awsTemplateType;
+	private TemplateLocation awsTemplateLocation;
 
 	/**
 	 * The access key to call Amazon's APIs
@@ -48,11 +48,11 @@ public class SimpleStackBean extends AbstractDescribableImpl<SimpleStackBean> {
 	private Region awsRegion;
 
 	@DataBoundConstructor
-	public SimpleStackBean(String stackName, TemplateType awsTemplateType, 
+	public SimpleStackBean(String stackName, TemplateLocation awsTemplateLocation, 
 			String awsAccessKey,
 			String awsSecretKey, Region awsRegion) {
 		this.stackName = stackName;
-		this.awsTemplateType = awsTemplateType != null ? awsTemplateType : TemplateType.getDefault();
+		this.awsTemplateLocation = awsTemplateLocation != null ? awsTemplateLocation : TemplateLocation.getDefault();
 		this.awsAccessKey = awsAccessKey;
 		this.awsSecretKey = awsSecretKey;
 		this.awsRegion = awsRegion != null ? awsRegion : Region.getDefault();
@@ -62,8 +62,8 @@ public class SimpleStackBean extends AbstractDescribableImpl<SimpleStackBean> {
 		return stackName;
 	}
 
-	public TemplateType getAwsTemplateType() {
-		return awsTemplateType;
+	public TemplateLocation getAwsTemplateLocation() {
+		return awsTemplateLocation;
 	}
 	public String getAwsAccessKey() {
 		return awsAccessKey;
@@ -102,10 +102,10 @@ public class SimpleStackBean extends AbstractDescribableImpl<SimpleStackBean> {
 			}
 			return FormValidation.ok();
 		}
-		public ListBoxModel doFillAwsTemplateTypeItems() {
+		public ListBoxModel doFillawsTemplateLocationItems() {
 			ListBoxModel items = new ListBoxModel();
-			for (TemplateType templateType : TemplateType.values()) {
-				items.add(templateType.readableName, templateType.name());
+			for (TemplateLocation templateLocation : TemplateLocation.values()) {
+				items.add(templateLocation.readableName, templateLocation.name());
 			}
 			return items;
 		}

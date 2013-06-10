@@ -121,17 +121,17 @@ public class CloudFormationBuildWrapper extends BuildWrapper {
 			AbstractBuild<?, ?> build, EnvVars env, PrintStream logger)
 			throws IOException {
 		
-		if (stackBean.getAWSTemplateType().toString() == TemplateType.Template_File.toString() ){
+		if (stackBean.getAwsTemplateLocation().toString() == TemplateLocation.Template_File.toString() ){
 		return new CloudFormation(logger, stackBean.getStackName(), 
-				stackBean.getAWSTemplateType(), 
+				stackBean.getAwsTemplateLocation(), 
 				build.getWorkspace().child(stackBean.getCloudFormationRecipe()).readToString(),
 			    stackBean.getParsedParameters(env),
 				stackBean.getTimeout(), stackBean.getParsedAwsAccessKey(env),
 				stackBean.getParsedAwsSecretKey(env),
 				stackBean.getAwsRegion(), stackBean.getAutoDeleteStack(), env);
-		} else if (stackBean.getAWSTemplateType().toString() == TemplateType.Template_URL.toString() ){
+		} else if (stackBean.getAwsTemplateLocation().toString() == TemplateLocation.Template_URL.toString() ){
 			return new CloudFormation(logger, stackBean.getStackName(), 
-					stackBean.getAWSTemplateType(), stackBean.getCloudFormationRecipe(),
+					stackBean.getAwsTemplateLocation(), stackBean.getCloudFormationRecipe(),
 				    stackBean.getParsedParameters(env),
 					stackBean.getTimeout(), stackBean.getParsedAwsAccessKey(env),
 					stackBean.getParsedAwsSecretKey(env),

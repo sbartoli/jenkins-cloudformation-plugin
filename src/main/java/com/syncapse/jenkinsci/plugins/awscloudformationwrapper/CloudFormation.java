@@ -55,14 +55,14 @@ public class CloudFormation {
     private boolean autoDeleteStack;
 	private EnvVars envVars;
 	private Region awsRegion;
-	private TemplateType awsTemplateType;
+	private TemplateLocation awsTemplateLocation;
 
 	private Map<String, String> outputs;
 
 	/**
 	 * @param logger a logger to write progress information.
 	 * @param stackName the name of the stack as defined in the AWS CloudFormation API.
-	 * @param templateType is to allow selecting to use recipe as file or url (s3).
+	 * @param templateLocation is to allow selecting to use recipe as file or url (s3).
 	 * @param recipeBody the body of the json document describing the stack.
 	 * @param parameters a Map of where the keys are the param name and the value the param value.
 	 * @param timeout Time to wait for the creation of a stack to complete. This value will be the greater between {@link #MIN_TIMEOUT} and the given value.
@@ -70,14 +70,14 @@ public class CloudFormation {
 	 * @param awsSecretKey the AWS API Secret Key.
 
 	 */
-	public CloudFormation(PrintStream logger, String stackName, TemplateType templateType,
+	public CloudFormation(PrintStream logger, String stackName, TemplateLocation templateLocation,
 			String recipeBody, Map<String, String> parameters,
 			long timeout, String awsAccessKey, String awsSecretKey, Region region, 
             boolean autoDeleteStack, EnvVars envVars) {
 
 		this.logger = logger;
 		this.stackName = stackName;
-		this.awsTemplateType = templateType != null ? templateType : TemplateType.getDefault();
+		this.awsTemplateLocation = templateLocation != null ? templateLocation : TemplateLocation.getDefault();
 		this.recipe = recipeBody;
 		this.parameters = parameters(parameters);
 		this.awsAccessKey = awsAccessKey;
@@ -307,10 +307,10 @@ public class CloudFormation {
 		CreateStackRequest r = new CreateStackRequest();
 		r.withStackName(getExpandedStackName());
 		r.withParameters(parameters);
-		if (this.awsTemplateType.toString() == TemplateType.Template_File.toString() ){
+		if (this.awsTemplateLocation.toString() == TemplateLocation.Template_File.toString() ){
 			r.withTemplateBody(recipe);		
 		}
-		else if(this.awsTemplateType.toString() == TemplateType.Template_URL.toString() ){
+		else if(this.awsTemplateLocation.toString() == TemplateLocation.Template_URL.toString() ){
 			r.withTemplateURL(recipe);
 		}
 		else {
